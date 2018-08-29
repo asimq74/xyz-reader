@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
+import com.example.xyzreader.data.ArticleLoader.Query;
 
 /**
  * A fragment representing a single Article detail screen. This fragment is
@@ -232,7 +233,10 @@ public class ArticleDetailFragment extends Fragment implements
                                 + "</font>"));
 
             }
-            bodyView.setText(Html.fromHtml(mCursor.getString(ArticleLoader.Query.BODY).replaceAll("(\r\n|\n)", "<br />")));
+            final String bodyRawText = mCursor.getString(Query.BODY);
+            bodyView.setText(Html.fromHtml(bodyRawText
+                .replaceAll("(\r\n\r\n)", "<p />")
+                .replaceAll("(\r\n)", " ")));
             ImageLoaderHelper.getInstance(getActivity()).getImageLoader()
                     .get(mCursor.getString(ArticleLoader.Query.PHOTO_URL), new ImageLoader.ImageListener() {
                         @Override
