@@ -14,13 +14,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     buildToolsVersion "27.0.3"
 
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        minSdkVersion 19
-        targetSdkVersion 25
+        minSdkVersion 20
+        targetSdkVersion 28
     }
 }
 
@@ -36,5 +36,7 @@ dependencies {
     implementation "com.android.support:design:$androidSupportVersion"
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
     implementation files('libs/volley.jar')
 }

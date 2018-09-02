@@ -1,25 +1,43 @@
 package com.example.xyzreader.data;
 
-import com.google.gson.annotations.SerializedName;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+@Entity(tableName = "bookItems")
 public class BookItem {
 
 	@SerializedName("aspect_ratio")
+	@ColumnInfo(name = "aspectRatio")
 	private float aspectRatio;
+	@ColumnInfo(name = "author")
 	@SerializedName("author")
 	private String author;
 	@SerializedName("body")
+	@ColumnInfo(name = "body")
 	private String body;
 	@SerializedName("id")
+	@NonNull
+	@PrimaryKey
+	@ColumnInfo(name = "id")
 	private Integer id;
 	@SerializedName("photo")
+	@ColumnInfo(name = "photo")
 	private String photo;
 	@SerializedName("published_date")
+	@ColumnInfo(name = "published_date")
 	private String publishedDate;
 	@SerializedName("thumb")
+	@ColumnInfo(name = "thumb")
 	private String thumb;
 	@SerializedName("title")
+	@ColumnInfo(name = "title")
 	private String title;
+
+	public BookItem() {
+	}
 
 	public float getAspectRatio() {
 		return aspectRatio;
