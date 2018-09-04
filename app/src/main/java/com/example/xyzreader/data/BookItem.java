@@ -3,103 +3,158 @@ package com.example.xyzreader.data;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "bookItems")
-public class BookItem {
+public class BookItem implements Parcelable {
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        @Override
+        public BookItem createFromParcel(Parcel in) {
+            return new BookItem(in);
+        }
 
-	@SerializedName("aspect_ratio")
-	@ColumnInfo(name = "aspectRatio")
-	private float aspectRatio;
-	@ColumnInfo(name = "author")
-	@SerializedName("author")
-	private String author;
-	@SerializedName("body")
-	@ColumnInfo(name = "body")
-	private String body;
-	@SerializedName("id")
-	@NonNull
-	@PrimaryKey
-	@ColumnInfo(name = "id")
-	private Integer id;
-	@SerializedName("photo")
-	@ColumnInfo(name = "photo")
-	private String photo;
-	@SerializedName("published_date")
-	@ColumnInfo(name = "published_date")
-	private String publishedDate;
-	@SerializedName("thumb")
-	@ColumnInfo(name = "thumb")
-	private String thumb;
-	@SerializedName("title")
-	@ColumnInfo(name = "title")
-	private String title;
+        @Override
+        public BookItem[] newArray(int size) {
+            return new BookItem[size];
+        }
+    };
+    @SerializedName("aspect_ratio")
+    @ColumnInfo(name = "aspectRatio")
+    private float aspectRatio;
+    @ColumnInfo(name = "author")
+    @SerializedName("author")
+    private String author;
+    @SerializedName("body")
+    @ColumnInfo(name = "body")
+    private String body;
+    @SerializedName("id")
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    private Integer id;
+    @SerializedName("photo")
+    @ColumnInfo(name = "photo")
+    private String photo;
+    @SerializedName("published_date")
+    @ColumnInfo(name = "published_date")
+    private String publishedDate;
+    @SerializedName("thumb")
+    @ColumnInfo(name = "thumb")
+    private String thumb;
+    @SerializedName("title")
+    @ColumnInfo(name = "title")
+    private String title;
 
-	public BookItem() {
-	}
+    public BookItem(Parcel parcel) {
+        aspectRatio = parcel.readFloat();
+        author = parcel.readString();
+        body = parcel.readString();
+        id = parcel.readInt();
+        photo = parcel.readString();
+        publishedDate = parcel.readString();
+        thumb = parcel.readString();
+        title = parcel.readString();
+    }
 
-	public float getAspectRatio() {
-		return aspectRatio;
-	}
+    public BookItem() {
+    }
 
-	public String getAuthor() {
-		return author;
-	}
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
 
-	public String getBody() {
-		return body;
-	}
+    @Override
+    public String toString() {
+        return "BookItem{" +
+                "aspectRatio=" + aspectRatio +
+                ", author='" + author + '\'' +
+                ", body='" + body + '\'' +
+                ", id=" + id +
+                ", photo='" + photo + '\'' +
+                ", publishedDate='" + publishedDate + '\'' +
+                ", thumb='" + thumb + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeFloat(aspectRatio);
+        parcel.writeString(author);
+        parcel.writeString(body);
+        parcel.writeInt(id);
+        parcel.writeString(photo);
+        parcel.writeString(publishedDate);
+        parcel.writeString(thumb);
+        parcel.writeString(title);
+    }
 
-	public String getPhoto() {
-		return photo;
-	}
+    public float getAspectRatio() {
+        return aspectRatio;
+    }
 
-	public String getPublishedDate() {
-		return publishedDate;
-	}
+    public void setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
+    }
 
-	public String getThumb() {
-		return thumb;
-	}
+    public String getAuthor() {
+        return author;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 
-	public void setAspectRatio(float aspectRatio) {
-		this.aspectRatio = aspectRatio;
-	}
+    public String getBody() {
+        return body;
+    }
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-	public void setBody(String body) {
-		this.body = body;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setPhoto(String photo) {
-		this.photo = photo;
-	}
+    public String getPhoto() {
+        return photo;
+    }
 
-	public void setPublishedDate(String publishedDate) {
-		this.publishedDate = publishedDate;
-	}
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 
-	public void setThumb(String thumb) {
-		this.thumb = thumb;
-	}
+    public String getPublishedDate() {
+        return publishedDate;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setPublishedDate(String publishedDate) {
+        this.publishedDate = publishedDate;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

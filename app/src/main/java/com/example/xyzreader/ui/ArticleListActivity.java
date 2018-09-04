@@ -12,7 +12,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -22,9 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.data.AllBookItemsLoader;
-import com.example.xyzreader.data.ItemsContract;
+import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.data.UpdaterService;
 
 import java.text.ParseException;
@@ -32,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -42,12 +41,12 @@ import java.util.List;
 public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<BookItem>> {
 
+    public static final String ITEM_ID = "ITEM_ID";
     private static final String TAG = ArticleListActivity.class.toString();
-    private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
     // Use default locale format
     private SimpleDateFormat outputFormat = new SimpleDateFormat();
     // Most time functions can only handle 1902 - 2037
@@ -67,15 +66,10 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_article_list);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        mRecyclerView = findViewById(R.id.recycler_view);
         prepareLoader(23);
-
         if (savedInstanceState == null) {
             refresh();
         }
@@ -108,7 +102,7 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
 
-    protected void prepareLoader(@NonNull final int loaderId) {
+    protected void prepareLoader(final int loaderId) {
         if (getSupportLoaderManager().getLoader(loaderId) == null) {
             getSupportLoaderManager().initLoader(loaderId, null, this).forceLoad();
             return;
@@ -149,11 +143,11 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         public ViewHolder(View view) {
             super(view);
-            thumbnailView = (DynamicHeightNetworkImageView) view.findViewById(R.id.thumbnail);
-            titleView = (TextView) view.findViewById(R.id.article_title);
-            subtitleView = (TextView) view.findViewById(R.id.article_subtitle);
-            expandButtonView = (ImageButton) view.findViewById(R.id.expand_button);
-            supportingTextView = (TextView) view.findViewById(R.id.supporting_text);
+            thumbnailView = view.findViewById(R.id.thumbnail);
+            titleView = view.findViewById(R.id.article_title);
+            subtitleView = view.findViewById(R.id.article_subtitle);
+            expandButtonView = view.findViewById(R.id.expand_button);
+            supportingTextView = view.findViewById(R.id.supporting_text);
             expandButtonView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -189,9 +183,11 @@ public class ArticleListActivity extends AppCompatActivity implements
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int adapterPosition = vh.getAdapterPosition();
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            ItemsContract.Items.buildItemUri(getItemId(adapterPosition))));
+                    final int adapterPosition = vh.getAdapterPosition();
+                    final long itemId = getItemId(adapterPosition);
+                    final Intent intent = new Intent(ArticleListActivity.this, ArticleDetailActivity.class);
+                    intent.putExtra(ITEM_ID, itemId);
+                    startActivity(intent);
                 }
             });
             return vh;
