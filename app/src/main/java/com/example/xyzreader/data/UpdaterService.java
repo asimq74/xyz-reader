@@ -56,6 +56,7 @@ public class UpdaterService extends IntentService {
 
             @Override
             public void onFailure(Call<List<BookItem>> call, Throwable t) {
+                Log.e(this.getClass().getSimpleName(), "error calling service", t);
                 Toast.makeText(getApplicationContext(), "Something went wrong...Please try later!", Toast.LENGTH_LONG).show();
             }
 
