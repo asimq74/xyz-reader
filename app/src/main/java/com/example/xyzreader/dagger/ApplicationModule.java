@@ -1,8 +1,10 @@
-package com.example.xyzreader.data;
+package com.example.xyzreader.dagger;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
+
+import com.example.xyzreader.data.BookItemDatabase;
 
 import javax.inject.Singleton;
 

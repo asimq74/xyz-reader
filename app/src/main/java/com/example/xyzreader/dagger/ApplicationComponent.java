@@ -1,9 +1,13 @@
-package com.example.xyzreader.data;
+package com.example.xyzreader.dagger;
 
 import android.app.Application;
 import android.content.Context;
 
 import com.example.xyzreader.MyApplication;
+import com.example.xyzreader.data.AllBookItemsLoader;
+import com.example.xyzreader.data.BookItemDatabase;
+import com.example.xyzreader.data.SingleBookItemLoader;
+import com.example.xyzreader.data.UpdaterService;
 
 import javax.inject.Singleton;
 

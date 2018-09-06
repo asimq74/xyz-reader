@@ -3,9 +3,9 @@ package com.example.xyzreader;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.xyzreader.data.ApplicationComponent;
-import com.example.xyzreader.data.ApplicationModule;
-import com.example.xyzreader.data.DaggerApplicationComponent;
+import com.example.xyzreader.dagger.ApplicationComponent;
+import com.example.xyzreader.dagger.ApplicationModule;
+import com.example.xyzreader.dagger.DaggerApplicationComponent;
 
 
 /**
