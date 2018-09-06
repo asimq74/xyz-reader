@@ -5,16 +5,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
 
+import com.example.xyzreader.MyApplication;
+
+import javax.inject.Inject;
+
 public class SingleBookItemLoader extends AsyncTaskLoader<BookItem> {
-    private static final String DATABASE_NAME = "bookitems_db";
     private final long itemId;
-    private BookItemDatabase bookItemDatabase;
+    @Inject BookItemDatabase bookItemDatabase;
 
     public SingleBookItemLoader(@NonNull Context context, long itemId) {
         super(context);
         this.itemId = itemId;
-        bookItemDatabase = Room.databaseBuilder(context,
-                BookItemDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        final MyApplication application = (MyApplication) context.getApplicationContext();
+        application.getApplicationComponent().inject(this);
     }
 
     public static AsyncTaskLoader<BookItem> newBookItemLoaderInstance(@NonNull Context context, long itemId) {

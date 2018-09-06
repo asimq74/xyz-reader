@@ -11,8 +11,11 @@ import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.remote.retrofit.GetBookItems;
 import com.example.xyzreader.remote.retrofit.RetrofitClientInstance;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,10 +33,14 @@ public class UpdaterService extends IntentService {
 		super(TAG);
 	}
 
+	@Inject
+	BookItemDatabase bookItemDatabase;
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Time time = new Time();
-
+		final MyApplication application = (MyApplication) getApplicationContext();
+		application.getApplicationComponent().inject(this);
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo ni = cm.getActiveNetworkInfo();
 		if (ni == null || !ni.isConnected()) {
@@ -48,8 +55,6 @@ public class UpdaterService extends IntentService {
 		GetBookItems service = RetrofitClientInstance.getRetrofitInstance().create(GetBookItems.class);
 		Call<List<BookItem>> call = service.getAllBookItems();
 		call.enqueue(new Callback<List<BookItem>>() {
-			private static final String DATABASE_NAME = "bookitems_db";
-			private BookItemDatabase bookItemDatabase;
 
 			@Override
 			public void onFailure(Call<List<BookItem>> call, Throwable t) {
@@ -64,19 +69,16 @@ public class UpdaterService extends IntentService {
 					return;
 				}
 
-				bookItemDatabase = Room.databaseBuilder(getApplicationContext(),
-						BookItemDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
-
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
 						bookItemDatabase.daoAccess().insertMultipleBookItems(bookItems);
+						sendStickyBroadcast(
+								new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, false));
 					}
 				}).start();
 			}
 		});
 
-		sendStickyBroadcast(
-				new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, false));
 	}
 }

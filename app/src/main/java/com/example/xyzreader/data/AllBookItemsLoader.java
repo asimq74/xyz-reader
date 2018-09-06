@@ -4,11 +4,16 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
+import com.example.xyzreader.MyApplication;
+
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class AllBookItemsLoader extends AsyncTaskLoader<List<BookItem>> {
     private static final String DATABASE_NAME = "bookitems_db";
-    private BookItemDatabase bookItemDatabase;
+    @Inject
+    BookItemDatabase bookItemDatabase;
 
     public static AsyncTaskLoader<List<BookItem>> newBookItemLoaderInstance(Context context) {
         return new AllBookItemsLoader(context);
@@ -16,8 +21,8 @@ public class AllBookItemsLoader extends AsyncTaskLoader<List<BookItem>> {
 
     public AllBookItemsLoader(Context context) {
         super(context);
-        bookItemDatabase = Room.databaseBuilder(context,
-                BookItemDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        final MyApplication application = (MyApplication) context.getApplicationContext();
+        application.getApplicationComponent().inject(this);
     }
 
     @Override

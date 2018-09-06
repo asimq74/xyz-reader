@@ -69,7 +69,6 @@ public class ArticleListActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_article_list);
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = findViewById(R.id.recycler_view);
-        prepareLoader(23);
         if (savedInstanceState == null) {
             refresh();
         }
@@ -94,6 +93,7 @@ public class ArticleListActivity extends AppCompatActivity implements
 
     private void updateRefreshingUI() {
         mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
+        prepareLoader(23);
     }
 
     @Override
