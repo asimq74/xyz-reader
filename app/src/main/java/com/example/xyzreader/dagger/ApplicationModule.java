@@ -1,12 +1,12 @@
 package com.example.xyzreader.dagger;
 
+import javax.inject.Singleton;
+
 import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
 import com.example.xyzreader.data.BookItemDatabase;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,18 +26,18 @@ public class ApplicationModule {
     }
 
     @Provides
-    Application provideApplication() {
+    public Application provideApplication() {
         return mApplication;
     }
 
     @Provides
-    Context provideContext() {
+    public Context provideContext() {
         return mApplication;
     }
 
     @Provides
     @Singleton
-    BookItemDatabase provideBookItemDatabase(Context context) {
+    public BookItemDatabase provideBookItemDatabase(Context context) {
         return Room.databaseBuilder(context,
                 BookItemDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
     }

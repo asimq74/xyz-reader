@@ -16,6 +16,7 @@ repositories {
 android {
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
+    compileOptions.incremental = false
 
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
@@ -38,10 +39,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
-    compile 'com.google.dagger:dagger-android:2.11'
-    compile 'com.google.dagger:dagger-android-support:2.11' // if you use the support libraries
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    compile 'com.google.dagger:dagger:2.14.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
     implementation files('libs/volley.jar')
     compileOnly 'javax.annotation:jsr250-api:1.0'
 }
