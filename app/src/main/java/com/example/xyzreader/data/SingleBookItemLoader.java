@@ -13,6 +13,16 @@ public class SingleBookItemLoader extends AsyncTaskLoader<BookItem> {
     private final long itemId;
     @Inject BookItemDatabase bookItemDatabase;
 
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+    }
+
+    @Override
+    protected void onStopLoading() {
+        super.onStopLoading();
+    }
+
     public SingleBookItemLoader(@NonNull Context context, long itemId) {
         super(context);
         this.itemId = itemId;
