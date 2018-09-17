@@ -33,7 +33,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
+                    android:contentDescription="@string/logoDescription"
                     android:src="@drawable/logo"/>
             </android.support.v7.widget.Toolbar>
 

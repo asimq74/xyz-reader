@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -34,7 +35,14 @@ import com.squareup.picasso.Picasso;
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<BookItem> {
+        implements LoaderManager.LoaderCallbacks<BookItem>, AppBarLayout.OnOffsetChangedListener {
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(offset) / (float) maxScroll;
+        Log.i(TAG, "percentage: " + percentage);
+    }
 
     private static final String EXTRA_IMAGE = "extraImage";
     private final String TAG = this.getClass().getSimpleName();
@@ -42,6 +50,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ProgressBar progressBar;
     private CardView cardView;
+    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +64,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_article_detail);
         progressBar = findViewById(R.id.progressBar);
         cardView = findViewById(R.id.cardView);
-        ViewCompat.setTransitionName(findViewById(R.id.app_bar_layout), EXTRA_IMAGE);
+        appBarLayout = findViewById(R.id.app_bar_layout);
+			  appBarLayout.addOnOffsetChangedListener(this);
+        ViewCompat.setTransitionName(appBarLayout, EXTRA_IMAGE);
         supportPostponeEnterTransition();
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,7 +97,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<BookItem> loader, BookItem data) {
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(data.getTitle());
 //        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         final ImageView photoView = (ImageView) findViewById(R.id.photo);
