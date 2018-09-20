@@ -17,6 +17,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.format.DateUtils;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,43 +32,75 @@ import com.example.xyzreader.data.SingleBookItemLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<BookItem>, AppBarLayout.OnOffsetChangedListener {
 
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.toolbar_header_view)
+    HeaderView toolbarHeaderView;
+
+    @BindView(R.id.float_header_view)
+    HeaderView floatHeaderView;
+
+    private boolean isHideToolbarView = false;
+
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
         float percentage = (float) Math.abs(offset) / (float) maxScroll;
-        Log.i(TAG, "percentage: " + percentage);
+
+        if (percentage == 1f && isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.VISIBLE);
+            toolbarHeaderView.findViewById(R.id.header_view_author).setVisibility(View.GONE);
+            toolbarHeaderView.findViewById(R.id.header_view_published_date).setVisibility(View.GONE);
+            isHideToolbarView = !isHideToolbarView;
+
+        } else if (percentage < 1f && !isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.GONE);
+            isHideToolbarView = !isHideToolbarView;
+        }
     }
 
     private static final String EXTRA_IMAGE = "extraImage";
     private final String TAG = this.getClass().getSimpleName();
     private long mStartId;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
     private ProgressBar progressBar;
     private CardView cardView;
-    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        }
-        initActivityTransitions();
         setContentView(R.layout.activity_article_detail);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        collapsingToolbarLayout.setTitle(" ");
         progressBar = findViewById(R.id.progressBar);
         cardView = findViewById(R.id.cardView);
         appBarLayout = findViewById(R.id.app_bar_layout);
 			  appBarLayout.addOnOffsetChangedListener(this);
-        ViewCompat.setTransitionName(appBarLayout, EXTRA_IMAGE);
-        supportPostponeEnterTransition();
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -95,11 +128,26 @@ public class ArticleDetailActivity extends AppCompatActivity
         return SingleBookItemLoader.newBookItemLoaderInstance(this, mStartId);
     }
 
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
+
+    private Date parsePublishedDate(String dateString) {
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException ex) {
+            Log.e(TAG, ex.getMessage());
+            Log.i(TAG, "passing today's date");
+            return new Date();
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<BookItem> loader, BookItem data) {
-        collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(data.getTitle());
-//        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        final String publishedDate = DateUtils.getRelativeTimeSpanString(
+                parsePublishedDate(data.getPublishedDate()).getTime(),
+                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+                DateUtils.FORMAT_ABBREV_ALL).toString();
+        toolbarHeaderView.bindTo(data.getTitle(), data.getAuthor(), publishedDate);
+        floatHeaderView.bindTo(data.getTitle(), data.getAuthor(), publishedDate);
         final ImageView photoView = (ImageView) findViewById(R.id.photo);
         final String photoUrl = data.getPhoto();
         final String body = data.getBody();
@@ -152,14 +200,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
     }
 
-    private void initActivityTransitions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Slide transition = new Slide();
-            transition.excludeTarget(android.R.id.statusBarBackground, false);
-            getWindow().setEnterTransition(transition);
-            getWindow().setReturnTransition(transition);
-        }
-    }
 
     private void applyPalette(Palette palette) {
         int primaryDark = getResources().getColor(R.color.theme_primary_dark);
