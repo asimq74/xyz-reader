@@ -11,7 +11,7 @@
         android:id="@+id/header_view_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         android:textColor="@android:color/white"
         tools:text="Japanese Fairy Tales" />
 
