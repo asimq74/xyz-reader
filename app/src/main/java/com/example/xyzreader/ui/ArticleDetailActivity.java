@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -224,10 +225,14 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         @Override
         public void onClick(View v) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/html");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, data.getAuthor());
-            startActivity(Intent.createChooser(sharingIntent, "Share using"));
+            Uri pictureUri = Uri.parse(data.getPhoto());
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, data.getAuthor());
+            shareIntent.putExtra(Intent.EXTRA_STREAM, pictureUri);
+            shareIntent.setType("image/*");
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, "Share images..."));
         }
     }
 
