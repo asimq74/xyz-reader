@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.app.ActivityOptions;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +14,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.transition.Slide;
+import android.transition.TransitionManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;

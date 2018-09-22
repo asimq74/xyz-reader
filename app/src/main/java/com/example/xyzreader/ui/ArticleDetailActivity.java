@@ -1,24 +1,24 @@
 package com.example.xyzreader.ui;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +39,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
@@ -46,23 +47,34 @@ import butterknife.ButterKnife;
 public class ArticleDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<BookItem>, AppBarLayout.OnOffsetChangedListener {
 
+    private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
-
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.toolbar_header_view)
     HeaderView toolbarHeaderView;
-
     @BindView(R.id.float_header_view)
     HeaderView floatHeaderView;
-
     private boolean isHideToolbarView = false;
+    private long mStartId;
+    private ProgressBar progressBar;
+    private CardView cardView;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
+    private BookItem data;
 
+    @OnClick(R.id.fab)
+    public void onClickFab(View view) {
+        Snackbar mySnackbar = Snackbar.make(view,
+                "Here's a Snackbar", Snackbar.LENGTH_LONG);
+        mySnackbar.setAction("Action", new SnackBarListener());
+        TextView text = mySnackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        text.setTextColor(getResources().getColor(R.color.ltgray));
+        mySnackbar.setActionTextColor(Color.WHITE);
+        mySnackbar.show();
+    }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
@@ -81,12 +93,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
     }
 
-    private static final String EXTRA_IMAGE = "extraImage";
-    private final String TAG = this.getClass().getSimpleName();
-    private long mStartId;
-    private ProgressBar progressBar;
-    private CardView cardView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +106,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
         cardView = findViewById(R.id.cardView);
         appBarLayout = findViewById(R.id.app_bar_layout);
-			  appBarLayout.addOnOffsetChangedListener(this);
+        appBarLayout.addOnOffsetChangedListener(this);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -128,8 +134,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         return SingleBookItemLoader.newBookItemLoaderInstance(this, mStartId);
     }
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss", Locale.US);
-
     private Date parsePublishedDate(String dateString) {
         try {
             return dateFormat.parse(dateString);
@@ -142,6 +146,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<BookItem> loader, BookItem data) {
+        this.data = data;
         final String publishedDate = DateUtils.getRelativeTimeSpanString(
                 parsePublishedDate(data.getPublishedDate()).getTime(),
                 System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
@@ -182,7 +187,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         //do nothing
     }
 
-
     protected void prepareLoader(@NonNull final int loaderId) {
         if (getSupportLoaderManager().getLoader(loaderId) == null) {
             getSupportLoaderManager().initLoader(loaderId, null, this).forceLoad();
@@ -200,7 +204,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
     }
 
-
     private void applyPalette(Palette palette) {
         int primaryDark = getResources().getColor(R.color.theme_primary_dark);
         int primary = getResources().getColor(R.color.theme_primary);
@@ -215,6 +218,17 @@ public class ArticleDetailActivity extends AppCompatActivity
         int vibrantColor = palette.getVibrantColor(getResources().getColor(R.color.theme_accent));
         fab.setRippleColor(lightVibrantColor);
         fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+    }
+
+    public class SnackBarListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/html");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, data.getAuthor());
+            startActivity(Intent.createChooser(sharingIntent, "Share using"));
+        }
     }
 
 }
