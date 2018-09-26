@@ -2,8 +2,9 @@ package com.example.xyzreader.data;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import android.app.IntentService;
-import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,8 +15,6 @@ import android.widget.Toast;
 import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.remote.retrofit.GetBookItems;
 import com.example.xyzreader.remote.retrofit.RetrofitClientInstance;
-
-import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +71,7 @@ public class UpdaterService extends IntentService {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						bookItemDatabase.daoAccess().insertMultipleBookItems(bookItems);
+						bookItemDatabase.bookItemDao().insertMultipleBookItems(bookItems);
 						sendStickyBroadcast(
 								new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, false));
 					}

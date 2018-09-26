@@ -1,14 +1,13 @@
 package com.example.xyzreader.data;
 
-import android.arch.persistence.room.Room;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.xyzreader.MyApplication;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 public class AllBookItemsLoader extends AsyncTaskLoader<List<BookItem>> {
     private static final String DATABASE_NAME = "bookitems_db";
@@ -27,6 +26,6 @@ public class AllBookItemsLoader extends AsyncTaskLoader<List<BookItem>> {
 
     @Override
     public List<BookItem> loadInBackground() {
-        return bookItemDatabase.daoAccess().fetchAllBookItems();
+        return bookItemDatabase.bookItemDao().fetchAllBookItems();
     }
 }

@@ -47,5 +47,6 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife:8.6.0'
     compileOnly 'com.jakewharton:butterknife-compiler:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    implementation 'android.arch.lifecycle:livedata:1.1.1'
     implementation files('libs/volley.jar')
 }

@@ -1,13 +1,12 @@
 package com.example.xyzreader.data;
 
-import android.arch.persistence.room.Room;
+import javax.inject.Inject;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.example.xyzreader.MyApplication;
-
-import javax.inject.Inject;
 
 public class SingleBookItemLoader extends AsyncTaskLoader<BookItem> {
     private final long itemId;
@@ -36,6 +35,6 @@ public class SingleBookItemLoader extends AsyncTaskLoader<BookItem> {
 
     @Override
     public BookItem loadInBackground() {
-        return bookItemDatabase.daoAccess().fetchOneBookItembyId((int) (long) itemId);
+        return bookItemDatabase.bookItemDao().fetchOneBookItembyId((int) (long) itemId);
     }
 }
