@@ -189,7 +189,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 		new AsyncTask<Integer, Void, String>() {
 			@Override
 			protected String doInBackground(Integer... integers) {
-				return bookItemRepository.getBodyById(integers[0]).getValue();
+				return bookItemRepository.getBodyById(integers[0]);
 			}
 
 			@Override

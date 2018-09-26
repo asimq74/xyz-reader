@@ -46,7 +46,7 @@ public class ApplicationModule {
 
 	@Provides
 	@Singleton
-	public BookItemDatabase provideBookItemDatabase(Context context) {
+	public BookItemDatabase provideBookItemDatabase() {
 		return bookItemDatabase;
 	}
 

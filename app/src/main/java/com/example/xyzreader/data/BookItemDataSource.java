@@ -2,8 +2,6 @@ package com.example.xyzreader.data;
 
 import javax.inject.Inject;
 
-import android.arch.lifecycle.LiveData;
-
 import com.example.xyzreader.dao.BookItemDao;
 
 public class BookItemDataSource implements BookItemRepository {
@@ -16,7 +14,7 @@ public class BookItemDataSource implements BookItemRepository {
 	}
 
 	@Override
-	public LiveData<String> getBodyById(int id) {
+	public String getBodyById(int id) {
 		return bookItemDao.fetchBodyById(id);
 	}
 }
