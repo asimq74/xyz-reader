@@ -6,11 +6,13 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
+import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.dao.BookItemDao;
 import com.example.xyzreader.data.BodyLoaderById;
 import com.example.xyzreader.data.BookItemDataSource;
 import com.example.xyzreader.data.BookItemDatabase;
 import com.example.xyzreader.data.BookItemRepository;
+import com.example.xyzreader.viewmodels.BookItemViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,6 +39,7 @@ public class ApplicationModule {
 	public Application provideApplication() {
 		return mApplication;
 	}
+
 
 	@Provides
 	@Singleton

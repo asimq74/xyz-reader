@@ -13,6 +13,7 @@ import com.example.xyzreader.data.BookItemRepository;
 import com.example.xyzreader.data.SingleBookItemLoader;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.ArticleDetailActivity;
+import com.example.xyzreader.viewmodels.BookItemViewModel;
 
 import dagger.Component;
 
@@ -46,5 +47,7 @@ public interface ApplicationComponent {
 	void inject(SingleBookItemLoader singleBookItemLoader);
 
 	void inject(ArticleDetailActivity articleDetailActivity);
+
+	void inject(BookItemViewModel bookItemViewModel);
 
 }

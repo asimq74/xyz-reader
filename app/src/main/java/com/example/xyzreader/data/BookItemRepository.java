@@ -1,7 +1,9 @@
 package com.example.xyzreader.data;
 
+import android.arch.lifecycle.LiveData;
+
 public interface BookItemRepository {
 
-	String getBodyById(int id);
+	LiveData<String> getBodyById(int id);
 
 }

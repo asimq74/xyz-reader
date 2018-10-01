@@ -186,18 +186,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 				cardView.setVisibility(View.VISIBLE);
 			}
 		});
-		new AsyncTask<Integer, Void, String>() {
-			@Override
-			protected String doInBackground(Integer... integers) {
-				return bookItemRepository.getBodyById(integers[0]);
-			}
-
-			@Override
-			protected void onPostExecute(String result) {
-				super.onPostExecute(result);
-				Log.i(TAG, "bodyLiveData: " + result);
-			}
-		}.execute(data.getId());
+        Log.i(TAG, "bodyLiveData: " + bookItemRepository.getBodyById(data.getId()).getValue());
 	}
 
 	@Override
