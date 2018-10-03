@@ -1,8 +1,10 @@
 package com.example.xyzreader.dagger;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import android.app.Application;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
@@ -69,4 +71,11 @@ public class ApplicationModule {
 	public Context provideContext() {
 		return mApplication;
 	}
+
+    @Provides
+	@Singleton
+    ViewModelProvider.Factory provideViewModelFactory(BookItemRepository bookItemRepository) {
+
+        return new ProjectViewModelFactory(mApplication, bookItemRepository);
+    }
 }

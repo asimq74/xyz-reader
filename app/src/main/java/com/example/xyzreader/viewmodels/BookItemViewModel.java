@@ -1,5 +1,6 @@
 package com.example.xyzreader.viewmodels;
 
+import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 
@@ -13,13 +14,13 @@ import javax.inject.Inject;
  */
 public class BookItemViewModel extends AndroidViewModel {
 
-    @Inject
-    BookItemRepository bookItemRepository;
+    private final BookItemRepository bookItemRepository;
     private LiveData<String> mLiveBody;
 
-    public BookItemViewModel(MyApplication application) {
+    @Inject
+    public BookItemViewModel(Application application, BookItemRepository bookItemRepository) {
         super(application);
-        application.getApplicationComponent().inject(this);
+        this.bookItemRepository = bookItemRepository;
     }
 
     public LiveData<String> getBodyById(int id) {

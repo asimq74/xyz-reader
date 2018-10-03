@@ -3,10 +3,14 @@ package com.example.xyzreader.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -16,6 +20,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +45,7 @@ import com.example.xyzreader.R;
 import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.data.BookItemRepository;
 import com.example.xyzreader.data.SingleBookItemLoader;
+import com.example.xyzreader.viewmodels.BookItemViewModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -70,8 +76,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 	private final String TAG = this.getClass().getSimpleName();
 	@BindView(R.id.app_bar_layout)
 	AppBarLayout appBarLayout;
-	@Inject
-	BookItemRepository bookItemRepository;
 	private CardView cardView;
 	@BindView(R.id.collapsing_toolbar)
 	CollapsingToolbarLayout collapsingToolbarLayout;
@@ -86,6 +90,9 @@ public class ArticleDetailActivity extends AppCompatActivity
 	Toolbar toolbar;
 	@BindView(R.id.toolbar_header_view)
 	HeaderView toolbarHeaderView;
+    private BookItemViewModel viewModel;
+	@Inject
+	ViewModelProvider.Factory viewModelFactory;
 
 	private void applyPalette(Palette palette) {
 		int primaryDark = getResources().getColor(R.color.theme_primary_dark);
@@ -123,6 +130,8 @@ public class ArticleDetailActivity extends AppCompatActivity
 		ButterKnife.bind(this);
 		final MyApplication application = (MyApplication) getApplicationContext();
 		application.getApplicationComponent().inject(this);
+		viewModel = ViewModelProviders.of(this, viewModelFactory)
+				.get(BookItemViewModel.class);
 		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		collapsingToolbarLayout.setTitle(" ");
@@ -186,7 +195,12 @@ public class ArticleDetailActivity extends AppCompatActivity
 				cardView.setVisibility(View.VISIBLE);
 			}
 		});
-        Log.i(TAG, "bodyLiveData: " + bookItemRepository.getBodyById(data.getId()).getValue());
+		viewModel.getBodyById(data.getId()).observe(this, new Observer<String>() {
+			@Override
+			public void onChanged(@Nullable String body) {
+				Log.i(TAG, "bodyLiveData: " + body);
+			}
+		});
 	}
 
 	@Override
