@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
+import com.example.xyzreader.data.BookHeaderTuple;
 import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.data.BookItemRepository;
 import com.example.xyzreader.data.SingleBookItemLoader;
@@ -199,6 +200,12 @@ public class ArticleDetailActivity extends AppCompatActivity
 			@Override
 			public void onChanged(@Nullable String body) {
 				Log.i(TAG, "bodyLiveData: " + body);
+			}
+		});
+		viewModel.getHeaderInfoById(data.getId()).observe(this, new Observer<BookHeaderTuple>() {
+			@Override
+			public void onChanged(@Nullable BookHeaderTuple tuple) {
+				Log.i(TAG, "tuple: " + tuple);
 			}
 		});
 	}

@@ -15,6 +15,7 @@ import java.util.List;
 public class BookItemDataSource implements BookItemRepository {
 
 	private MediatorLiveData<String> mBodyLive = new MediatorLiveData<>();
+    private MediatorLiveData<BookHeaderTuple> mHeaderTupleLive = new MediatorLiveData<>();
 
 	private BookItemDao bookItemDao;
 
@@ -34,4 +35,16 @@ public class BookItemDataSource implements BookItemRepository {
 		});
 		return mBodyLive;
 	}
+
+    @Override
+    public LiveData<BookHeaderTuple> getHeaderTupleById(int id) {
+        final LiveData<BookHeaderTuple> headerTuple = bookItemDao.fetchBookHeaderTupleById(id);
+        mHeaderTupleLive.addSource(headerTuple, new Observer<BookHeaderTuple>() {
+            @Override
+            public void onChanged(@Nullable BookHeaderTuple bookHeaderTuple) {
+                mHeaderTupleLive.setValue(bookHeaderTuple);
+            }
+        });
+        return mHeaderTupleLive;
+    }
 }

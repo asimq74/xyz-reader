@@ -6,4 +6,6 @@ public interface BookItemRepository {
 
 	LiveData<String> getBodyById(int id);
 
+	LiveData<BookHeaderTuple> getHeaderTupleById(int id);
+
 }
