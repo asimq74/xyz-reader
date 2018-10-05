@@ -3,7 +3,6 @@ package com.example.xyzreader.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -17,7 +16,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +42,6 @@ import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.BookHeaderTuple;
 import com.example.xyzreader.data.BookItem;
-import com.example.xyzreader.data.BookItemRepository;
 import com.example.xyzreader.data.SingleBookItemLoader;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
 import com.squareup.picasso.Callback;
@@ -150,8 +147,51 @@ public class ArticleDetailActivity extends AppCompatActivity
 		} else {
 			mStartId = savedInstanceState.getLong(ArticleListActivity.ITEM_ID);
 		}
-		prepareLoader(24);
+//		prepareLoader(24);
+		final int bookId = (int) (long) this.mStartId;
+		viewModel.getHeaderInfoById(bookId).observe(this, new Observer<BookHeaderTuple>() {
+			@Override
+			public void onChanged(@Nullable BookHeaderTuple tuple) {
+				Log.i(TAG, "tuple: " + tuple);
+				final String publishedDate = DateUtils.getRelativeTimeSpanString(
+						parsePublishedDate(tuple.getPublishedDate()).getTime(),
+						System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+						DateUtils.FORMAT_ABBREV_ALL).toString();
+				toolbarHeaderView.bindTo(tuple.getTitle(), tuple.getAuthor(), publishedDate);
+				floatHeaderView.bindTo(tuple.getTitle(), tuple.getAuthor(), publishedDate);
+				final ImageView photoView = (ImageView) findViewById(R.id.photo);
+				final String photoUrl = tuple.getPhoto();
+				Picasso.with(ArticleDetailActivity.this).load(photoUrl).into(photoView, new Callback() {
+					@Override
+					public void onError() {
+						Log.e(TAG, "error loading photoView with url: " + photoUrl);
+					}
 
+					@Override
+					public void onSuccess() {
+						Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
+						Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+							public void onGenerated(Palette palette) {
+								applyPalette(palette);
+							}
+						});
+					}
+				});
+			}
+		});
+		viewModel.getBodyById(bookId).observe(this, new Observer<String>() {
+			@Override
+			public void onChanged(@Nullable String body) {
+				Log.i(TAG, "bodyLiveData: " + body);
+				final TextView articleBodyView = findViewById(R.id.article_body);
+				final String bodyRawText = body;
+				articleBodyView.setText(Html.fromHtml(bodyRawText
+						.replaceAll("(\r\n\r\n)", "<p />")
+						.replaceAll("(\r\n)", " ")));
+				progressBar.setVisibility(View.GONE);
+				cardView.setVisibility(View.VISIBLE);
+			}
+		});
 	}
 
 	@Override
