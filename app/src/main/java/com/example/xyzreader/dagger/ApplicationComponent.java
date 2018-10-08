@@ -10,7 +10,6 @@ import com.example.xyzreader.dao.BookItemDao;
 import com.example.xyzreader.data.AllBookItemsLoader;
 import com.example.xyzreader.data.BookItemDatabase;
 import com.example.xyzreader.data.BookItemRepository;
-import com.example.xyzreader.data.SingleBookItemLoader;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.ArticleDetailActivity;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
@@ -28,9 +27,9 @@ public interface ApplicationComponent {
 
 	Application application();
 
-	BookItemDatabase bookItemDatabase();
-
 	BookItemDao bookItemDao();
+
+	BookItemDatabase bookItemDatabase();
 
 	BookItemRepository bookItemRepository();
 
@@ -43,8 +42,6 @@ public interface ApplicationComponent {
 	void inject(MyApplication application);
 
 	void inject(UpdaterService updaterService);
-
-	void inject(SingleBookItemLoader singleBookItemLoader);
 
 	void inject(ArticleDetailActivity articleDetailActivity);
 

@@ -1,23 +1,20 @@
 package com.example.xyzreader.data;
 
+import javax.inject.Inject;
+
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.Observer;
-import android.content.Intent;
 import android.support.annotation.Nullable;
-
-import javax.inject.Inject;
 
 import com.example.xyzreader.dao.BookItemDao;
 
-import java.util.List;
-
 public class BookItemDataSource implements BookItemRepository {
 
-	private MediatorLiveData<String> mBodyLive = new MediatorLiveData<>();
-    private MediatorLiveData<BookHeaderTuple> mHeaderTupleLive = new MediatorLiveData<>();
-
 	private BookItemDao bookItemDao;
+	private MediatorLiveData<String> mBodyLive = new MediatorLiveData<>();
+	private MediatorLiveData<BookHeaderTuple> mHeaderTupleLive = new MediatorLiveData<>();
+	private MediatorLiveData<BookItem> mBookItemLive = new MediatorLiveData<>();
 
 	@Inject
 	public BookItemDataSource(BookItemDao bookItemDao) {
@@ -36,15 +33,27 @@ public class BookItemDataSource implements BookItemRepository {
 		return mBodyLive;
 	}
 
-    @Override
-    public LiveData<BookHeaderTuple> getHeaderTupleById(int id) {
-        final LiveData<BookHeaderTuple> headerTuple = bookItemDao.fetchBookHeaderTupleById(id);
-        mHeaderTupleLive.addSource(headerTuple, new Observer<BookHeaderTuple>() {
-            @Override
-            public void onChanged(@Nullable BookHeaderTuple bookHeaderTuple) {
-                mHeaderTupleLive.setValue(bookHeaderTuple);
-            }
-        });
-        return mHeaderTupleLive;
-    }
+	@Override
+	public LiveData<BookHeaderTuple> getHeaderTupleById(int id) {
+		final LiveData<BookHeaderTuple> headerTuple = bookItemDao.fetchBookHeaderTupleById(id);
+		mHeaderTupleLive.addSource(headerTuple, new Observer<BookHeaderTuple>() {
+			@Override
+			public void onChanged(@Nullable BookHeaderTuple bookHeaderTuple) {
+				mHeaderTupleLive.setValue(bookHeaderTuple);
+			}
+		});
+		return mHeaderTupleLive;
+	}
+
+	@Override
+	public LiveData<BookItem> getBookItemById(int id) {
+		final LiveData<BookItem> bookItem = bookItemDao.fetchOneBookItembyId(id);
+		mBookItemLive.addSource(bookItem, new Observer<BookItem>() {
+			@Override
+			public void onChanged(@Nullable BookItem bookItem) {
+				mBookItemLive.setValue(bookItem);
+			}
+		});
+		return mBookItemLive;
+	}
 }

@@ -63,6 +63,14 @@ public class BookItem implements Parcelable {
     public BookItem() {
     }
 
+    public BookItem(BookHeaderTuple tuple) {
+        this.title = tuple.getTitle();
+        this.author = tuple.getAuthor();
+        this.photo = tuple.getPhoto();
+        this.thumb = tuple.getThumb();
+        this.publishedDate = tuple.getPublishedDate();
+    }
+
     @Override
     public int describeContents() {
         return this.hashCode();

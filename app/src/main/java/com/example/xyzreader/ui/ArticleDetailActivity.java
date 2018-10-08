@@ -23,8 +23,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -40,9 +38,7 @@ import android.widget.TextView;
 
 import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.BookHeaderTuple;
 import com.example.xyzreader.data.BookItem;
-import com.example.xyzreader.data.SingleBookItemLoader;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -55,7 +51,7 @@ import butterknife.OnClick;
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity
-		implements LoaderManager.LoaderCallbacks<BookItem>, AppBarLayout.OnOffsetChangedListener {
+		implements AppBarLayout.OnOffsetChangedListener {
 
 	public class SnackBarListener implements View.OnClickListener {
 
@@ -71,6 +67,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 			startActivity(Intent.createChooser(shareIntent, "Share images..."));
 		}
 	}
+
 	private final String TAG = this.getClass().getSimpleName();
 	@BindView(R.id.app_bar_layout)
 	AppBarLayout appBarLayout;
@@ -88,7 +85,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 	Toolbar toolbar;
 	@BindView(R.id.toolbar_header_view)
 	HeaderView toolbarHeaderView;
-    private BookItemViewModel viewModel;
+	private BookItemViewModel viewModel;
 	@Inject
 	ViewModelProvider.Factory viewModelFactory;
 
@@ -97,7 +94,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 		int primary = getResources().getColor(R.color.theme_primary);
 		collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(primary));
 		collapsingToolbarLayout.setStatusBarScrimColor(palette.getDarkMutedColor(primaryDark));
-		updateBackground((FloatingActionButton) findViewById(R.id.fab), palette);
+		updateBackground(findViewById(R.id.fab), palette);
 		supportStartPostponedEnterTransition();
 	}
 
@@ -130,14 +127,12 @@ public class ArticleDetailActivity extends AppCompatActivity
 		application.getApplicationComponent().inject(this);
 		viewModel = ViewModelProviders.of(this, viewModelFactory)
 				.get(BookItemViewModel.class);
-		setSupportActionBar(toolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		collapsingToolbarLayout.setTitle(" ");
 		progressBar = findViewById(R.id.progressBar);
 		cardView = findViewById(R.id.cardView);
 		appBarLayout = findViewById(R.id.app_bar_layout);
 		appBarLayout.addOnOffsetChangedListener(this);
-		setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+		setSupportActionBar(toolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		if (savedInstanceState == null) {
@@ -147,112 +142,14 @@ public class ArticleDetailActivity extends AppCompatActivity
 		} else {
 			mStartId = savedInstanceState.getLong(ArticleListActivity.ITEM_ID);
 		}
-//		prepareLoader(24);
-		final int bookId = (int) (long) this.mStartId;
-		viewModel.getHeaderInfoById(bookId).observe(this, new Observer<BookHeaderTuple>() {
+		final int bookId = (int) this.mStartId;
+		viewModel.getBookItemById(bookId).observe(this, new Observer<BookItem>() {
 			@Override
-			public void onChanged(@Nullable BookHeaderTuple tuple) {
-				Log.i(TAG, "tuple: " + tuple);
-				final String publishedDate = DateUtils.getRelativeTimeSpanString(
-						parsePublishedDate(tuple.getPublishedDate()).getTime(),
-						System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-						DateUtils.FORMAT_ABBREV_ALL).toString();
-				toolbarHeaderView.bindTo(tuple.getTitle(), tuple.getAuthor(), publishedDate);
-				floatHeaderView.bindTo(tuple.getTitle(), tuple.getAuthor(), publishedDate);
-				final ImageView photoView = (ImageView) findViewById(R.id.photo);
-				final String photoUrl = tuple.getPhoto();
-				Picasso.with(ArticleDetailActivity.this).load(photoUrl).into(photoView, new Callback() {
-					@Override
-					public void onError() {
-						Log.e(TAG, "error loading photoView with url: " + photoUrl);
-					}
-
-					@Override
-					public void onSuccess() {
-						Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
-						Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-							public void onGenerated(Palette palette) {
-								applyPalette(palette);
-							}
-						});
-					}
-				});
+			public void onChanged(@Nullable BookItem bookItem) {
+				Log.i(TAG, "bookItem="+bookItem);
+				populateInitialView(bookItem);
 			}
 		});
-		viewModel.getBodyById(bookId).observe(this, new Observer<String>() {
-			@Override
-			public void onChanged(@Nullable String body) {
-				Log.i(TAG, "bodyLiveData: " + body);
-				final TextView articleBodyView = findViewById(R.id.article_body);
-				final String bodyRawText = body;
-				articleBodyView.setText(Html.fromHtml(bodyRawText
-						.replaceAll("(\r\n\r\n)", "<p />")
-						.replaceAll("(\r\n)", " ")));
-				progressBar.setVisibility(View.GONE);
-				cardView.setVisibility(View.VISIBLE);
-			}
-		});
-	}
-
-	@Override
-	public Loader<BookItem> onCreateLoader(int i, Bundle bundle) {
-		progressBar.setVisibility(View.VISIBLE);
-		cardView.setVisibility(View.GONE);
-		return SingleBookItemLoader.newBookItemLoaderInstance(this, mStartId);
-	}
-
-	@Override
-	public void onLoadFinished(Loader<BookItem> loader, BookItem data) {
-		this.data = data;
-		final String publishedDate = DateUtils.getRelativeTimeSpanString(
-				parsePublishedDate(data.getPublishedDate()).getTime(),
-				System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-				DateUtils.FORMAT_ABBREV_ALL).toString();
-		toolbarHeaderView.bindTo(data.getTitle(), data.getAuthor(), publishedDate);
-		floatHeaderView.bindTo(data.getTitle(), data.getAuthor(), publishedDate);
-		final ImageView photoView = (ImageView) findViewById(R.id.photo);
-		final String photoUrl = data.getPhoto();
-		final String body = data.getBody();
-		Picasso.with(this).load(photoUrl).into(photoView, new Callback() {
-			@Override
-			public void onError() {
-				Log.e(TAG, "error loading photoView with url: " + photoUrl);
-			}
-
-			@Override
-			public void onSuccess() {
-				Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
-				Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-					public void onGenerated(Palette palette) {
-						applyPalette(palette);
-					}
-				});
-				final TextView articleBodyView = findViewById(R.id.article_body);
-				final String bodyRawText = body;
-				articleBodyView.setText(Html.fromHtml(bodyRawText
-						.replaceAll("(\r\n\r\n)", "<p />")
-						.replaceAll("(\r\n)", " ")));
-				progressBar.setVisibility(View.GONE);
-				cardView.setVisibility(View.VISIBLE);
-			}
-		});
-		viewModel.getBodyById(data.getId()).observe(this, new Observer<String>() {
-			@Override
-			public void onChanged(@Nullable String body) {
-				Log.i(TAG, "bodyLiveData: " + body);
-			}
-		});
-		viewModel.getHeaderInfoById(data.getId()).observe(this, new Observer<BookHeaderTuple>() {
-			@Override
-			public void onChanged(@Nullable BookHeaderTuple tuple) {
-				Log.i(TAG, "tuple: " + tuple);
-			}
-		});
-	}
-
-	@Override
-	public void onLoaderReset(Loader<BookItem> loader) {
-		//do nothing
 	}
 
 	@Override
@@ -288,13 +185,39 @@ public class ArticleDetailActivity extends AppCompatActivity
 		}
 	}
 
-	protected void prepareLoader(@NonNull final int loaderId) {
-		if (getSupportLoaderManager().getLoader(loaderId) == null) {
-			getSupportLoaderManager().initLoader(loaderId, null, this).forceLoad();
-			return;
-		}
-		getSupportLoaderManager().restartLoader(loaderId, null, this).forceLoad();
+	private void populateInitialView(@NonNull BookItem bookItem) {
+		final String publishedDate = DateUtils.getRelativeTimeSpanString(
+				parsePublishedDate(bookItem.getPublishedDate()).getTime(),
+				System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
+				DateUtils.FORMAT_ABBREV_ALL).toString();
+		toolbarHeaderView.bindTo(bookItem.getTitle(), bookItem.getAuthor(), publishedDate);
+		floatHeaderView.bindTo(bookItem.getTitle(), bookItem.getAuthor(), publishedDate);
+		final ImageView photoView = findViewById(R.id.photo);
+		final String photoUrl = bookItem.getPhoto();
+		Picasso.with(ArticleDetailActivity.this).load(photoUrl).into(photoView, new Callback() {
+			@Override
+			public void onError() {
+				Log.e(TAG, "error loading photoView with url: " + photoUrl);
+			}
+
+			private void onGenerated(Palette palette) {
+				applyPalette(palette);
+			}
+
+			@Override
+			public void onSuccess() {
+				Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
+				Palette.from(bitmap).generate(this::onGenerated);
+			}
+		});
+		final TextView articleBodyView = findViewById(R.id.article_body);
+		articleBodyView.setText(Html.fromHtml(bookItem.getBody()
+				.replaceAll("(\r\n\r\n)", "<p />")
+				.replaceAll("(\r\n)", " ")));
+		progressBar.setVisibility(View.GONE);
+		cardView.setVisibility(View.VISIBLE);
 	}
+
 
 	private void updateBackground(FloatingActionButton fab, Palette palette) {
 		int lightVibrantColor = palette.getLightVibrantColor(getResources().getColor(android.R.color.white));
