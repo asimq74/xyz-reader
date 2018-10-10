@@ -6,12 +6,11 @@ import android.app.Application;
 import android.content.Context;
 
 import com.example.xyzreader.MyApplication;
-import com.example.xyzreader.dao.BookItemDao;
 import com.example.xyzreader.data.AllBookItemsLoader;
-import com.example.xyzreader.data.BookItemDatabase;
-import com.example.xyzreader.data.BookItemRepository;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.ArticleDetailActivity;
+import com.example.xyzreader.ui.ArticleListActivity;
+import com.example.xyzreader.viewmodels.AllItemsViewModel;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
 
 import dagger.Component;
@@ -27,12 +26,6 @@ public interface ApplicationComponent {
 
 	Application application();
 
-	BookItemDao bookItemDao();
-
-	BookItemDatabase bookItemDatabase();
-
-	BookItemRepository bookItemRepository();
-
 	Context context();
 
 	// allow to inject into our Main class
@@ -45,6 +38,10 @@ public interface ApplicationComponent {
 
 	void inject(ArticleDetailActivity articleDetailActivity);
 
+	void inject(ArticleListActivity articleListActivity);
+
 	void inject(BookItemViewModel bookItemViewModel);
+
+	void inject(AllItemsViewModel allItemsViewModel);
 
 }

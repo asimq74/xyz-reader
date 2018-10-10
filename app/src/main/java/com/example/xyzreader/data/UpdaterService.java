@@ -8,7 +8,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.text.format.Time;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -37,7 +36,6 @@ public class UpdaterService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		Time time = new Time();
 		final MyApplication application = (MyApplication) getApplicationContext();
 		application.getApplicationComponent().inject(this);
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

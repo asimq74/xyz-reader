@@ -1,6 +1,15 @@
 package com.example.xyzreader.ui;
 
-import android.app.ActivityOptions;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+
+import javax.inject.Inject;
+
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,26 +23,21 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.format.DateUtils;
-import android.transition.Slide;
-import android.transition.TransitionManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
+import com.example.xyzreader.dagger.AllItemsViewModelFactory;
 import com.example.xyzreader.data.AllBookItemsLoader;
 import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.data.UpdaterService;
+import com.example.xyzreader.viewmodels.AllItemsViewModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
+import butterknife.ButterKnife;
 
 /**
  * An activity representing a list of Articles. This activity has different presentations for
@@ -43,6 +47,11 @@ import java.util.Locale;
  */
 public class ArticleListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<List<BookItem>> {
+
+
+    private AllItemsViewModel viewModel;
+    @Inject
+    AllItemsViewModelFactory viewModelFactory;
 
     public static final String ITEM_ID = "ITEM_ID";
     private static final String TAG = ArticleListActivity.class.toString();
@@ -70,6 +79,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_list);
+        ButterKnife.bind(this);
+        final MyApplication application = (MyApplication) getApplicationContext();
+        application.getApplicationComponent().inject(this);
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(AllItemsViewModel.class);
         mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = findViewById(R.id.recycler_view);
         if (savedInstanceState == null) {

@@ -1,5 +1,7 @@
 package com.example.xyzreader.data;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import android.arch.lifecycle.LiveData;
@@ -12,37 +14,12 @@ import com.example.xyzreader.dao.BookItemDao;
 public class BookItemDataSource implements BookItemRepository {
 
 	private BookItemDao bookItemDao;
-	private MediatorLiveData<String> mBodyLive = new MediatorLiveData<>();
-	private MediatorLiveData<BookHeaderTuple> mHeaderTupleLive = new MediatorLiveData<>();
 	private MediatorLiveData<BookItem> mBookItemLive = new MediatorLiveData<>();
+	private MediatorLiveData<List<BookItem>> mAllBookItemsLive = new MediatorLiveData<>();
 
 	@Inject
 	public BookItemDataSource(BookItemDao bookItemDao) {
 		this.bookItemDao = bookItemDao;
-	}
-
-	@Override
-	public LiveData<String> getBodyById(int id) {
-		final LiveData<String> body = bookItemDao.fetchBodyById(id);
-		mBodyLive.addSource(body, new Observer<String>() {
-			@Override
-			public void onChanged(@Nullable String bodyString) {
-				mBodyLive.setValue(bodyString);
-			}
-		});
-		return mBodyLive;
-	}
-
-	@Override
-	public LiveData<BookHeaderTuple> getHeaderTupleById(int id) {
-		final LiveData<BookHeaderTuple> headerTuple = bookItemDao.fetchBookHeaderTupleById(id);
-		mHeaderTupleLive.addSource(headerTuple, new Observer<BookHeaderTuple>() {
-			@Override
-			public void onChanged(@Nullable BookHeaderTuple bookHeaderTuple) {
-				mHeaderTupleLive.setValue(bookHeaderTuple);
-			}
-		});
-		return mHeaderTupleLive;
 	}
 
 	@Override
@@ -55,5 +32,17 @@ public class BookItemDataSource implements BookItemRepository {
 			}
 		});
 		return mBookItemLive;
+	}
+
+	@Override
+	public LiveData<List<BookItem>> getAllBookItems() {
+		final LiveData<List<BookItem>> allBookItems = bookItemDao.fetchAllLiveBookItems();
+		mAllBookItemsLive.addSource(allBookItems, new Observer<List<BookItem>>() {
+			@Override
+			public void onChanged(@Nullable List<BookItem> bookItems) {
+				mAllBookItemsLive.setValue(bookItems);
+			}
+		});
+		return mAllBookItemsLive;
 	}
 }

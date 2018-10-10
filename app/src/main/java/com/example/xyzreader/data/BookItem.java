@@ -11,158 +11,152 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "bookItems")
 public class BookItem implements Parcelable {
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        @Override
-        public BookItem createFromParcel(Parcel in) {
-            return new BookItem(in);
-        }
 
-        @Override
-        public BookItem[] newArray(int size) {
-            return new BookItem[size];
-        }
-    };
-    @SerializedName("aspect_ratio")
-    @ColumnInfo(name = "aspectRatio")
-    private float aspectRatio;
-    @ColumnInfo(name = "author")
-    @SerializedName("author")
-    private String author;
-    @SerializedName("body")
-    @ColumnInfo(name = "body")
-    private String body;
-    @SerializedName("id")
-    @NonNull
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    private Integer id;
-    @SerializedName("photo")
-    @ColumnInfo(name = "photo")
-    private String photo;
-    @SerializedName("published_date")
-    @ColumnInfo(name = "published_date")
-    private String publishedDate;
-    @SerializedName("thumb")
-    @ColumnInfo(name = "thumb")
-    private String thumb;
-    @SerializedName("title")
-    @ColumnInfo(name = "title")
-    private String title;
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+		@Override
+		public BookItem createFromParcel(Parcel in) {
+			return new BookItem(in);
+		}
 
-    public BookItem(Parcel parcel) {
-        aspectRatio = parcel.readFloat();
-        author = parcel.readString();
-        body = parcel.readString();
-        id = parcel.readInt();
-        photo = parcel.readString();
-        publishedDate = parcel.readString();
-        thumb = parcel.readString();
-        title = parcel.readString();
-    }
+		@Override
+		public BookItem[] newArray(int size) {
+			return new BookItem[size];
+		}
+	};
+	@SerializedName("aspect_ratio")
+	@ColumnInfo(name = "aspectRatio")
+	private float aspectRatio;
+	@ColumnInfo(name = "author")
+	@SerializedName("author")
+	private String author;
+	@SerializedName("body")
+	@ColumnInfo(name = "body")
+	private String body;
+	@SerializedName("id")
+	@NonNull
+	@PrimaryKey
+	@ColumnInfo(name = "id")
+	private Integer id;
+	@SerializedName("photo")
 
-    public BookItem() {
-    }
+	@ColumnInfo(name = "photo")
+	private String photo;
+	@SerializedName("published_date")
+	@ColumnInfo(name = "published_date")
+	private String publishedDate;
+	@SerializedName("thumb")
+	@ColumnInfo(name = "thumb")
+	private String thumb;
+	@SerializedName("title")
+	@ColumnInfo(name = "title")
+	private String title;
 
-    public BookItem(BookHeaderTuple tuple) {
-        this.title = tuple.getTitle();
-        this.author = tuple.getAuthor();
-        this.photo = tuple.getPhoto();
-        this.thumb = tuple.getThumb();
-        this.publishedDate = tuple.getPublishedDate();
-    }
+	public BookItem() {
+	}
 
-    @Override
-    public int describeContents() {
-        return this.hashCode();
-    }
+	public BookItem(Parcel parcel) {
+		aspectRatio = parcel.readFloat();
+		author = parcel.readString();
+		body = parcel.readString();
+		id = parcel.readInt();
+		photo = parcel.readString();
+		publishedDate = parcel.readString();
+		thumb = parcel.readString();
+		title = parcel.readString();
+	}
 
-    @Override
-    public String toString() {
-        return "BookItem{" +
-                "aspectRatio=" + aspectRatio +
-                ", author='" + author + '\'' +
-                ", body='" + body + '\'' +
-                ", id=" + id +
-                ", photo='" + photo + '\'' +
-                ", publishedDate='" + publishedDate + '\'' +
-                ", thumb='" + thumb + '\'' +
-                ", title='" + title + '\'' +
-                '}';
-    }
+	@Override
+	public int describeContents() {
+		return this.hashCode();
+	}
 
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeFloat(aspectRatio);
-        parcel.writeString(author);
-        parcel.writeString(body);
-        parcel.writeInt(id);
-        parcel.writeString(photo);
-        parcel.writeString(publishedDate);
-        parcel.writeString(thumb);
-        parcel.writeString(title);
-    }
+	public float getAspectRatio() {
+		return aspectRatio;
+	}
 
-    public float getAspectRatio() {
-        return aspectRatio;
-    }
+	public String getAuthor() {
+		return author;
+	}
 
-    public void setAspectRatio(float aspectRatio) {
-        this.aspectRatio = aspectRatio;
-    }
+	public String getBody() {
+		return body;
+	}
 
-    public String getAuthor() {
-        return author;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+	public String getPhoto() {
+		return photo;
+	}
 
-    public String getBody() {
-        return body;
-    }
+	public String getPublishedDate() {
+		return publishedDate;
+	}
 
-    public void setBody(String body) {
-        this.body = body;
-    }
+	public String getThumb() {
+		return thumb;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setAspectRatio(float aspectRatio) {
+		this.aspectRatio = aspectRatio;
+	}
 
-    public String getPhoto() {
-        return photo;
-    }
+	public void setAuthor(String author) {
+		this.author = author;
+	}
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
-    }
+	public void setBody(String body) {
+		this.body = body;
+	}
 
-    public String getPublishedDate() {
-        return publishedDate;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setPublishedDate(String publishedDate) {
-        this.publishedDate = publishedDate;
-    }
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 
-    public String getThumb() {
-        return thumb;
-    }
+	public void setPublishedDate(String publishedDate) {
+		this.publishedDate = publishedDate;
+	}
 
-    public void setThumb(String thumb) {
-        this.thumb = thumb;
-    }
+	public void setThumb(String thumb) {
+		this.thumb = thumb;
+	}
 
-    public String getTitle() {
-        return title;
-    }
+	public void setTitle(String title) {
+		this.title = title;
+	}
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+	@Override
+	public String toString() {
+		return "BookItem{" +
+				"aspectRatio=" + aspectRatio +
+				", author='" + author + '\'' +
+				", body='" + body + '\'' +
+				", id=" + id +
+				", photo='" + photo + '\'' +
+				", publishedDate='" + publishedDate + '\'' +
+				", thumb='" + thumb + '\'' +
+				", title='" + title + '\'' +
+				'}';
+	}
+
+	@Override
+	public void writeToParcel(Parcel parcel, int flags) {
+		parcel.writeFloat(aspectRatio);
+		parcel.writeString(author);
+		parcel.writeString(body);
+		parcel.writeInt(id);
+		parcel.writeString(photo);
+		parcel.writeString(publishedDate);
+		parcel.writeString(thumb);
+		parcel.writeString(title);
+	}
 }

@@ -1,5 +1,7 @@
 package com.example.xyzreader.viewmodels;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import android.app.Application;
@@ -12,22 +14,22 @@ import com.example.xyzreader.data.BookItemRepository;
 /**
  * Created by Md. Sifat-Ul Haque on 5/26/2017.
  */
-public class BookItemViewModel extends AndroidViewModel {
+public class AllItemsViewModel extends AndroidViewModel {
 
 	private final BookItemRepository bookItemRepository;
-	private LiveData<BookItem> mLiveBookItem;
+	private LiveData<List<BookItem>> mLiveBookItems;
 
 	@Inject
-	public BookItemViewModel(Application application, BookItemRepository bookItemRepository) {
+	public AllItemsViewModel(Application application, BookItemRepository bookItemRepository) {
 		super(application);
 		this.bookItemRepository = bookItemRepository;
 	}
 
-	public LiveData<BookItem> getBookItemById(int id) {
-		if (mLiveBookItem == null) {
-			mLiveBookItem = bookItemRepository.getBookItemById(id);
+	public LiveData<List<BookItem>> getAllBookItems() {
+		if (mLiveBookItems == null) {
+			mLiveBookItems = bookItemRepository.getAllBookItems();
 		}
-		return mLiveBookItem;
+		return mLiveBookItems;
 	}
 
 }

@@ -8,7 +8,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -38,6 +37,7 @@ import android.widget.TextView;
 
 import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
+import com.example.xyzreader.dagger.ProjectViewModelFactory;
 import com.example.xyzreader.data.BookItem;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
 import com.squareup.picasso.Callback;
@@ -87,7 +87,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 	HeaderView toolbarHeaderView;
 	private BookItemViewModel viewModel;
 	@Inject
-	ViewModelProvider.Factory viewModelFactory;
+	ProjectViewModelFactory viewModelFactory;
 
 	private void applyPalette(Palette palette) {
 		int primaryDark = getResources().getColor(R.color.theme_primary_dark);

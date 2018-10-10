@@ -9,7 +9,6 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.support.annotation.NonNull;
 
-import com.example.xyzreader.data.BookHeaderTuple;
 import com.example.xyzreader.data.BookItem;
 
 @Dao
@@ -19,13 +18,9 @@ public interface BookItemDao {
 	@NonNull
 	List<BookItem> fetchAllBookItems();
 
-	@Query("SELECT body from bookItems where id = :id")
+	@Query("SELECT * from bookItems ORDER BY id ASC")
 	@NonNull
-	LiveData<String> fetchBodyById(int id);
-
-	@Query("SELECT author, photo, published_date, thumb, title from bookItems where id = :id")
-	@NonNull
-	LiveData<BookHeaderTuple> fetchBookHeaderTupleById(int id);
+	LiveData<List<BookItem>> fetchAllLiveBookItems();
 
 	@Query("SELECT * from bookItems where id = :id")
 	@NonNull
