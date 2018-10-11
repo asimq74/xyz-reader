@@ -17,17 +17,23 @@ public class BookItemViewModel extends AndroidViewModel {
 	private final BookItemRepository bookItemRepository;
 	private LiveData<BookItem> mLiveBookItem;
 
+
 	@Inject
 	public BookItemViewModel(Application application, BookItemRepository bookItemRepository) {
 		super(application);
 		this.bookItemRepository = bookItemRepository;
 	}
 
-	public LiveData<BookItem> getBookItemById(int id) {
+	public void initBookItem(int id) {
+		if (mLiveBookItem == null) {
+			mLiveBookItem = bookItemRepository.getBookItemById(id);
+		}
+	}
+
+	public LiveData<BookItem> getBookItem(int id) {
 		if (mLiveBookItem == null) {
 			mLiveBookItem = bookItemRepository.getBookItemById(id);
 		}
 		return mLiveBookItem;
 	}
-
 }

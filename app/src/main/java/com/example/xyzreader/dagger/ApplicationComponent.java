@@ -6,7 +6,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.example.xyzreader.MyApplication;
-import com.example.xyzreader.data.AllBookItemsLoader;
 import com.example.xyzreader.data.UpdaterService;
 import com.example.xyzreader.ui.ArticleDetailActivity;
 import com.example.xyzreader.ui.ArticleListActivity;
@@ -27,10 +26,6 @@ public interface ApplicationComponent {
 	Application application();
 
 	Context context();
-
-	// allow to inject into our Main class
-	// method name not important
-	void inject(AllBookItemsLoader allBookItemsLoader);
 
 	void inject(MyApplication application);
 
