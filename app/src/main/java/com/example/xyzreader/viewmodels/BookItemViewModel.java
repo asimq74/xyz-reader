@@ -16,18 +16,12 @@ public class BookItemViewModel extends AndroidViewModel {
 
 	private final BookItemRepository bookItemRepository;
 	private LiveData<BookItem> mLiveBookItem;
-
+	private LiveData<String> mLiveBody;
 
 	@Inject
 	public BookItemViewModel(Application application, BookItemRepository bookItemRepository) {
 		super(application);
 		this.bookItemRepository = bookItemRepository;
-	}
-
-	public void initBookItem(int id) {
-		if (mLiveBookItem == null) {
-			mLiveBookItem = bookItemRepository.getBookItemById(id);
-		}
 	}
 
 	public LiveData<BookItem> getBookItem(int id) {
@@ -36,4 +30,12 @@ public class BookItemViewModel extends AndroidViewModel {
 		}
 		return mLiveBookItem;
 	}
+
+	public LiveData<String> getBody(int id) {
+		if (mLiveBody == null) {
+			mLiveBody = bookItemRepository.getBodyById(id);
+		}
+		return mLiveBody;
+	}
+
 }

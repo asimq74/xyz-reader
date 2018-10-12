@@ -16,15 +16,15 @@ public interface BookItemDao {
 
 	@Query("SELECT * from bookItems ORDER BY id ASC")
 	@NonNull
-	List<BookItem> fetchAllBookItems();
-
-	@Query("SELECT * from bookItems ORDER BY id ASC")
-	@NonNull
 	LiveData<List<BookItem>> fetchAllLiveBookItems();
 
 	@Query("SELECT * from bookItems where id = :id")
 	@NonNull
 	LiveData<BookItem> fetchOneBookItembyId(int id);
+
+	@Query("SELECT body from bookItems where id = :id")
+	@NonNull
+	LiveData<String> fetchBodyById(int id);
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	void insertMultipleBookItems(@NonNull List<BookItem> bookItemList);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true">
 
 
     <android.support.design.widget.AppBarLayout
@@ -28,18 +28,7 @@
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/head_image"
-                app:layout_collapseMode="pin" />
-
-            <ProgressBar
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/headerProgressBar"
-                style="?attr/progressBarStyle"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
+                app:layout_collapseMode="pin"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -54,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/header_view_end_margin_right"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
 
             </android.support.v7.widget.Toolbar>
 
@@ -80,7 +69,7 @@
                 android:minHeight="50dp"
                 android:minWidth="50dp"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="visible"/>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView"
@@ -101,11 +90,10 @@
                     android:layout_marginRight="@dimen/detail_inner_horiz_margin"
                     android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                     android:paddingBottom="@dimen/detail_body_bottom_margin"
-                    android:text="@string/lorem_ipsum"
                     android:textColor="@color/theme_primary"
                     android:textColorLink="@color/theme_accent"
                     android:textSize="@dimen/detail_body_text_size"
-                    tools:text="@string/lorem_ipsum" />
+                    tools:text="@string/lorem_ipsum"/>
 
 
             </android.support.v7.widget.CardView>
@@ -118,7 +106,7 @@
         android:id="@+id/fab"
         style="@style/FabStyle"
         app:layout_anchor="@id/app_bar_layout"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|right|end"/>
 
     <include
         android:id="@+id/float_header_view"
@@ -126,6 +114,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="com.example.xyzreader.ui.ViewBehavior"
-        />
+    />
 
 </android.support.design.widget.CoordinatorLayout>

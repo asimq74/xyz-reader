@@ -84,8 +84,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 	Toolbar toolbar;
 	@BindView(R.id.toolbar_header_view)
 	HeaderView toolbarHeaderView;
-	@BindView(R.id.headerProgressBar)
-	ProgressBar headerProgressBarView;
 	private BookItemViewModel viewModel;
 	@Inject
 	ProjectViewModelFactory viewModelFactory;
@@ -139,8 +137,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 		} else {
 			mStartId = savedInstanceState.getLong(ArticleListActivity.ITEM_ID);
 		}
-		progressBar.setVisibility(View.VISIBLE);
-		headerProgressBarView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -150,6 +146,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 				.get(BookItemViewModel.class);
 		final int bookId = (int) this.mStartId;
 		viewModel.getBookItem(bookId).observe(this, bookItem -> populateInitialView(bookItem));
+		viewModel.getBody(bookId).observe(this, body-> populateBody(body));
 	}
 
 	@Override
@@ -185,9 +182,11 @@ public class ArticleDetailActivity extends AppCompatActivity
 		}
 	}
 
+
 	private void populateInitialView(@NonNull BookItem bookItem) {
 		if (bookItem != null) {
-			Log.i(TAG, "bookItem=" + bookItem);
+			long start = System.currentTimeMillis();
+			data = bookItem;
 			final String publishedDate = DateUtils.getRelativeTimeSpanString(
 					parsePublishedDate(bookItem.getPublishedDate()).getTime(),
 					System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
@@ -210,18 +209,30 @@ public class ArticleDetailActivity extends AppCompatActivity
 				public void onSuccess() {
 					Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
 					Palette.from(bitmap).generate(this::onGenerated);
-					headerProgressBarView.setVisibility(View.GONE);
 				}
 			});
-			final TextView articleBodyView = findViewById(R.id.article_body);
-			articleBodyView.setText(Html.fromHtml(bookItem.getBody()
-					.replaceAll("(\r\n\r\n)", "<p />")
-					.replaceAll("(\r\n)", " ")));
 			progressBar.setVisibility(View.GONE);
 			cardView.setVisibility(View.VISIBLE);
+			long finish = System.currentTimeMillis();
+			long timeElapsed = finish - start;
+			Log.i(TAG, "timeElapsed to populate initial view: " + timeElapsed + " mS");
 		}
 	}
 
+	protected void populateBody(String body) {
+		cardView.setVisibility(View.GONE);
+		progressBar.setVisibility(View.VISIBLE);
+		long start = System.currentTimeMillis();
+		final TextView articleBodyView = findViewById(R.id.article_body);
+		articleBodyView.setText(Html.fromHtml(body.substring(1, 1000)
+				.replaceAll("(\r\n\r\n)", "<p />")
+				.replaceAll("(\r\n)", " ")));
+		long finish = System.currentTimeMillis();
+		long timeElapsed = finish - start;
+		Log.i(TAG, "timeElapsed to populate body: " + timeElapsed + " mS");
+		progressBar.setVisibility(View.GONE);
+		cardView.setVisibility(View.VISIBLE);
+	}
 
 	private void updateBackground(FloatingActionButton fab, Palette palette) {
 		int lightVibrantColor = palette.getLightVibrantColor(getResources().getColor(android.R.color.white));

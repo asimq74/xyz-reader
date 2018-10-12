@@ -6,8 +6,10 @@ import android.arch.lifecycle.LiveData;
 
 public interface BookItemRepository {
 
-	LiveData<BookItem> getBookItemById(int id);
-
 	LiveData<List<BookItem>> getAllBookItems();
+
+	LiveData<String> getBodyById(int id);
+
+	LiveData<BookItem> getBookItemById(int id);
 
 }

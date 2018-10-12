@@ -26,4 +26,9 @@ public class BookItemDataSource implements BookItemRepository {
 	public LiveData<List<BookItem>> getAllBookItems() {
 		return bookItemDao.fetchAllLiveBookItems();
 	}
+
+	@Override
+	public LiveData<String> getBodyById(int id) {
+		return bookItemDao.fetchBodyById(id);
+	}
 }
