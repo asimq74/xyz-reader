@@ -147,6 +147,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 		final int bookId = (int) this.mStartId;
 		viewModel.getBookItem(bookId).observe(this, bookItem -> populateInitialView(bookItem));
 		viewModel.getBody(bookId).observe(this, body-> populateBody(body));
+//		viewModel.getHeaderLoaded().observe(this, headerLoaded -> populateBody(data.getBody()));
 	}
 
 	@Override
@@ -209,6 +210,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 				public void onSuccess() {
 					Bitmap bitmap = ((BitmapDrawable) photoView.getDrawable()).getBitmap();
 					Palette.from(bitmap).generate(this::onGenerated);
+					viewModel.getBody(data.getId()).observe(ArticleDetailActivity.this, body-> populateBody(body));
 				}
 			});
 			progressBar.setVisibility(View.GONE);
@@ -216,6 +218,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 			long finish = System.currentTimeMillis();
 			long timeElapsed = finish - start;
 			Log.i(TAG, "timeElapsed to populate initial view: " + timeElapsed + " mS");
+			viewModel.setHeaderLoaded(true);
 		}
 	}
 
@@ -224,7 +227,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 		progressBar.setVisibility(View.VISIBLE);
 		long start = System.currentTimeMillis();
 		final TextView articleBodyView = findViewById(R.id.article_body);
-		articleBodyView.setText(Html.fromHtml(body.substring(1, 1000)
+		articleBodyView.setText(Html.fromHtml(body
 				.replaceAll("(\r\n\r\n)", "<p />")
 				.replaceAll("(\r\n)", " ")));
 		long finish = System.currentTimeMillis();
