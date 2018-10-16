@@ -9,6 +9,7 @@
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="expanded_toolbar_height">200dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_size">16sp</dimen>
     <dimen name="spacing_medium">8dp</dimen>
     <dimen name="spacing_large">16dp</dimen>
     <dimen name="header_view_start_margin_left">16dp</dimen>

@@ -3,6 +3,7 @@ package com.example.xyzreader.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -20,11 +21,13 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextPaint;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -37,6 +40,7 @@ import com.example.xyzreader.MyApplication;
 import com.example.xyzreader.R;
 import com.example.xyzreader.dagger.ProjectViewModelFactory;
 import com.example.xyzreader.data.BookItem;
+import com.example.xyzreader.util.PageSplitter;
 import com.example.xyzreader.viewmodels.BookItemViewModel;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -223,11 +227,22 @@ public class ArticleDetailActivity extends AppCompatActivity
 	}
 
 	protected void populateBody(String body) {
+
+        long start = System.currentTimeMillis();
 		cardView.setVisibility(View.GONE);
 		progressBar.setVisibility(View.VISIBLE);
-		long start = System.currentTimeMillis();
-		final TextView articleBodyView = findViewById(R.id.article_body);
-		articleBodyView.setText(Html.fromHtml(body
+        final TextView articleBodyView = findViewById(R.id.article_body);
+        ViewPager pagesView = findViewById(R.id.pages);
+		int width = 1328;
+		int height = (int) Math.ceil((2314 *2)/3);
+		PageSplitter pageSplitter = new PageSplitter(width, height, 1, 0);
+        TextPaint textPaint = new TextPaint();
+        textPaint.setTextSize(getResources().getDimension(R.dimen.text_size));
+        pageSplitter.append(body, textPaint);
+        List<CharSequence> pages = pageSplitter.getPages();
+
+		String page = pages.get(3).toString();
+        articleBodyView.setText(Html.fromHtml(page
 				.replaceAll("(\r\n\r\n)", "<p />")
 				.replaceAll("(\r\n)", " ")));
 		long finish = System.currentTimeMillis();
