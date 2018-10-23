@@ -20,6 +20,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
@@ -148,6 +149,9 @@ public class ArticleDetailActivity extends AppCompatActivity
 			toolbarHeaderView.setVisibility(View.VISIBLE);
 			toolbarHeaderView.findViewById(R.id.header_view_author).setVisibility(View.GONE);
 			toolbarHeaderView.findViewById(R.id.header_view_published_date).setVisibility(View.GONE);
+			final TextView titleView = toolbarHeaderView.findViewById(R.id.header_view_title);
+			titleView.setTextAppearance(this, android.R.style.TextAppearance_Material_Subhead);
+			titleView.setTextColor(ContextCompat.getColor(this, android.R.color.white));
 			isHideToolbarView = !isHideToolbarView;
 
 		} else if (percentage < 1f && !isHideToolbarView) {
@@ -238,7 +242,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
 	private void updateBackground(FloatingActionButton fab, Palette palette) {
 		int lightVibrantColor = palette.getLightVibrantColor(getResources().getColor(android.R.color.white));
-		int vibrantColor = palette.getVibrantColor(getResources().getColor(R.color.theme_accent));
+		int vibrantColor = palette.getVibrantColor(getResources().getColor(R.color.theme_primary_light));
 		fab.setRippleColor(lightVibrantColor);
 		fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
 	}
