@@ -45,7 +45,7 @@ public class UpdaterService extends IntentService {
 			return;
 		}
 
-		sendStickyBroadcast(
+		sendBroadcast(
 				new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, true));
 
 		/*Create handle for the RetrofitInstance interface*/
@@ -70,7 +70,7 @@ public class UpdaterService extends IntentService {
 					@Override
 					public void run() {
 						bookItemDatabase.bookItemDao().insertMultipleBookItems(bookItems);
-						sendStickyBroadcast(
+						sendBroadcast(
 								new Intent(BROADCAST_ACTION_STATE_CHANGE).putExtra(EXTRA_REFRESHING, false));
 					}
 				}).start();

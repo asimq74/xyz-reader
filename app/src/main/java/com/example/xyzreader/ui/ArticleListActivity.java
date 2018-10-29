@@ -166,7 +166,7 @@ public class ArticleListActivity extends AppCompatActivity {
 	private BroadcastReceiver mRefreshingReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
+			if (intent.getAction() != null && UpdaterService.BROADCAST_ACTION_STATE_CHANGE.equals(intent.getAction())) {
 				mIsRefreshing = intent.getBooleanExtra(UpdaterService.EXTRA_REFRESHING, false);
 				updateRefreshingUI();
 			}
@@ -210,11 +210,12 @@ public class ArticleListActivity extends AppCompatActivity {
 
 	private void updateRefreshingUI() {
 		mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
-		viewModel.getAllBookItems().observe(this, bookItems -> populateUI(bookItems));
+		if (!mIsRefreshing) {
+            viewModel.getAllBookItems().observe(this, bookItems -> populateUI(bookItems));
+        }
 	}
 
 	private void populateUI(@Nullable List<BookItem> bookItems) {
-		Log.i(TAG, "bookItems=" + bookItems);
 		Adapter adapter = new Adapter(bookItems);
 		adapter.setHasStableIds(true);
 		mRecyclerView.setAdapter(adapter);

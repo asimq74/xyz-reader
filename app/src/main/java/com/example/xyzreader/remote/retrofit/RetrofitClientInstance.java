@@ -2,6 +2,7 @@ package com.example.xyzreader.remote.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Retrofit.Builder;
 
 public class RetrofitClientInstance {
 	private static Retrofit retrofit;
@@ -9,7 +10,7 @@ public class RetrofitClientInstance {
 
 	public static Retrofit getRetrofitInstance() {
 		if (retrofit == null) {
-			retrofit = new retrofit2.Retrofit.Builder()
+			retrofit = new Builder()
 					.baseUrl(BASE_URL)
 					.addConverterFactory(GsonConverterFactory.create())
 					.build();
