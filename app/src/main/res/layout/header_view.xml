@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.xyzreader.ui.HeaderView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.xyzreader.ui.HeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <!-- Title -->
     <TextView
         android:id="@+id/header_view_title"
+        style="@style/ExpandedTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        android:textColor="@android:color/white"
+        android:gravity="center_horizontal"
         tools:text="Japanese Fairy Tales" />
 
     <!-- Subtitle -->
     <TextView
         android:id="@+id/header_view_author"
+        style="@style/ExpandedSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textStyle="bold"
         tools:text="Hayao Miyazaki" />
 
     <!-- Subtitle -->
     <TextView
         android:id="@+id/header_view_published_date"
+        style="@style/ExpandedSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textStyle="bold"
         tools:text="Oct 9, 1980" />
 
 
