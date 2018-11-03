@@ -239,7 +239,6 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         @Override
         public void onClick(View v) {
-            Uri pictureUri = Uri.parse(data.getPhoto());
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, data.getTitle());
