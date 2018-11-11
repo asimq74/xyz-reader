@@ -82,12 +82,13 @@
                 app:cardUseCompatPadding="true"
                 tools:visibility="visible">
 
-                <TextView
-                    android:id="@+id/article_body"
-                    style="@style/ArticleBody"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/body_text_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:text="@string/lorem_ipsum"/>
+                    android:clipToPadding="false"
+                    android:scrollbarStyle="outsideOverlay"/>
+
             </android.support.v7.widget.CardView>
 
         </FrameLayout>

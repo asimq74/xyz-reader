@@ -6,7 +6,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -17,12 +16,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -65,6 +67,8 @@ public class ArticleDetailActivity extends AppCompatActivity
     Toolbar toolbar;
     @BindView(R.id.toolbar_header_view)
     HeaderView toolbarHeaderView;
+    @BindView(R.id.body_text_recycler_view)
+    RecyclerView mRecyclerView;
     @Inject
     ProjectViewModelFactory viewModelFactory;
     private String publishedDate;
@@ -74,7 +78,8 @@ public class ArticleDetailActivity extends AppCompatActivity
     private boolean isHideToolbarView = false;
     private long mStartId;
     private BookItemViewModel viewModel;
-    private SnackBarListener snackBarListener = new SnackBarListener();;
+    private SnackBarListener snackBarListener = new SnackBarListener();
+    ;
 
     private void applyPalette(Palette palette) {
         int primaryDark = getResources().getColor(R.color.theme_primary_dark);
@@ -175,17 +180,19 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
     }
 
+    private void populateUI(@NonNull String[] paragraphs) {
+        Adapter adapter = new Adapter(paragraphs);
+        adapter.setHasStableIds(true);
+        mRecyclerView.setAdapter(adapter);
+        StaggeredGridLayoutManager sglm =
+                new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(sglm);
+    }
+
     protected void populateBody(String body) {
-        long start = System.currentTimeMillis();
         cardView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        final TextView articleBodyView = findViewById(R.id.article_body);
-        articleBodyView.setText(Html.fromHtml(body
-                .replaceAll("(\r\n\r\n)", "<p />")
-                .replaceAll("(\r\n)", " ")));
-        long finish = System.currentTimeMillis();
-        long timeElapsed = finish - start;
-        Log.i(TAG, "timeElapsed to populate body: " + timeElapsed + " mS");
+        populateUI(body.split("(\r\n\r\n)"));
         progressBar.setVisibility(View.GONE);
         cardView.setVisibility(View.VISIBLE);
     }
@@ -233,6 +240,42 @@ public class ArticleDetailActivity extends AppCompatActivity
         int vibrantColor = palette.getVibrantColor(getResources().getColor(R.color.theme_primary_light));
         fab.setRippleColor(lightVibrantColor);
         fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView bodyParagraphView;
+
+        public ViewHolder(View view) {
+            super(view);
+            bodyParagraphView = view.findViewById(R.id.article_body);
+        }
+    }
+
+    private class Adapter extends RecyclerView.Adapter<ViewHolder> {
+
+        private String[] paragraphs;
+
+        public Adapter(String[] paragraphs) {
+            this.paragraphs = paragraphs;
+        }
+
+        @Override
+        public int getItemCount() {
+            return paragraphs.length;
+        }
+
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.bodyParagraphView.setText(Html.fromHtml(paragraphs[position].replaceAll("(\r\n)", " ")));
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(getLayoutInflater().inflate(R.layout.list_item_detail, parent, false));
+        }
+
     }
 
     public class SnackBarListener implements View.OnClickListener {
